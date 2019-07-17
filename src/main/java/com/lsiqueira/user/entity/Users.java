@@ -12,24 +12,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class Users {
 
-	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
 	
 	@NotBlank(message = "{username.not.blank}")
+	@Email
 	private String username;
 	
 	@NotBlank(message = "{password.not.blank}")
 	private String password;
-	
-	@Email
-	@NotBlank(message = "{email.not.blank}")
-	private String email;
+
 	
 	@NotBlank(message = "{applicationAccess.not.blank}")
 	private String applicationAccess;
 	
+	@JsonIgnore
 	private String enabled;
 	
 	public Users() {
@@ -68,15 +66,6 @@ public class Users {
 	public void setEnabled(String enabled) {
 		this.enabled = enabled;
 	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
 
 	public String getApplicationAccess() {
 		return applicationAccess;

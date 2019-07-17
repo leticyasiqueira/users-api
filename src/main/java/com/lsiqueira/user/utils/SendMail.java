@@ -21,12 +21,12 @@ public class SendMail implements Serializable {
 			htmlEmail.setHtmlMsg(titulo);
 			htmlEmail.addTo(destinatario);
 			htmlEmail.setSubject(assunto);
-			htmlEmail.setFrom("teamvanessarodrigues@gmail.com");
+			htmlEmail.setFrom("leticyasiqueira.ti@gmail.com");
 			htmlEmail.setHostName("smtp.gmail.com");
 			htmlEmail.setSmtpPort(587);
 			htmlEmail.setTLS(true);
 			htmlEmail.setSSL(true);
-			htmlEmail.setAuthenticator(new DefaultAuthenticator("teamvanessarodrigues@gmail.com", "n3wsdh03"));
+			htmlEmail.setAuthenticator(new DefaultAuthenticator("leticyasiqueira.ti@gmail.com", "@Lele8193"));
 			htmlEmail.send();
 			return "Email Enviado";
 		} catch (EmailException e) {
