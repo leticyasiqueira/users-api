@@ -9,22 +9,30 @@ import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
+@ApiModel(value="Users", description="Classe modelo que representa o usuário")
 public class Users {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@JsonIgnore
 	private long id;
 	
 	@NotBlank(message = "{username.not.blank}")
 	@Email
+	@ApiModelProperty(notes = "Email do usuário", required = true)
 	private String username;
 	
 	@NotBlank(message = "{password.not.blank}")
+	@ApiModelProperty(notes = "Senha do usuário", required = true)
 	private String password;
 
 	
 	@NotBlank(message = "{applicationAccess.not.blank}")
+	@ApiModelProperty(notes = "Sistema origem do cadastro", required = true)
 	private String applicationAccess;
 	
 	@JsonIgnore

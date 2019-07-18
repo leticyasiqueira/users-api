@@ -32,11 +32,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
 	private DataSource dataSource;
 	
+	private static final String[] AUTH_WHITELIST = {
+	        "/swagger-resources/**",
+	        "/swagger-ui.html",
+	        "/v2/api-docs",
+	        "/webjars/**"
+	};
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable().authorizeRequests()
 			.antMatchers("/info").permitAll()
+			.antMatchers(AUTH_WHITELIST).permitAll()
 			.antMatchers(HttpMethod.POST, "/users").permitAll()
 			.antMatchers(HttpMethod.GET, "/users/password/{username}").permitAll()
 			.antMatchers(HttpMethod.PATCH, "/users/password/{id}").permitAll()
@@ -52,6 +59,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 			.addFilterBefore(new JWTAuthenticationFilter(),
 	                UsernamePasswordAuthenticationFilter.class);
 	}
+	
+
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {

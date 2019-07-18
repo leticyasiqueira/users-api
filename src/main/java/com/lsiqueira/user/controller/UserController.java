@@ -10,6 +10,7 @@ import org.apache.commons.mail.EmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -27,10 +29,19 @@ import com.lsiqueira.user.exception.UserNotFoundException;
 import com.lsiqueira.user.repository.AuthoritiesRepository;
 import com.lsiqueira.user.repository.UserRepository;
 import com.lsiqueira.user.utils.Password;
+import com.lsiqueira.user.utils.SendMail;
 import com.lsiqueira.user.utils.ValidUser;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ResponseHeader;
+import io.swagger.models.parameters.HeaderParameter;
 
 @RestController
 @RequestMapping("/users")
+@Api(basePath = "/users", produces = "application/json", tags = "users", description = "Usuário Resource")
 public class UserController {
 
 	@Autowired
@@ -41,10 +52,15 @@ public class UserController {
 
 	@Autowired
 	private ValidUser valid;
-	
-//	@Autowired
-//	private SendMail mail;
 
+	@Autowired
+	private SendMail mail;
+
+	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation(value = "Cadastra um usuário", notes = "Cadastra um usuário", response = Users.class)
+	@ApiResponses({ @ApiResponse(code = 201, message = "CREATED", responseHeaders = {
+			@ResponseHeader(name = HttpHeaders.LOCATION, response = String.class, description = "Mapeamento do recurso criado") }),
+			@ApiResponse(code = 400, message = "Bad Request"), @ApiResponse(code = 404, message = "Not Found") })
 	@PostMapping
 	public ResponseEntity<Void> createUser(@RequestBody @Valid Users user) throws Exception {
 
@@ -95,19 +111,19 @@ public class UserController {
 		UUID uuid = UUID.randomUUID();
 		String myRandom = uuid.toString();
 		Password pe = new Password();
-		String passwordEncoder = pe.cryptPassword(myRandom.substring(0,8));
+		String passwordEncoder = pe.cryptPassword(myRandom.substring(0, 8));
 
 		userCadastrado.setId(id);
 		userCadastrado.setPassword(passwordEncoder);
-		
-		System.out.println(myRandom.substring(0,8));
 
-//		String resposta = mail.sendEmail("Sua nova senha é: " + myRandom,
-//				userCadastrado.getUsername(), "Team Vaness Rodrigues - Reset de Senha");
-//
-//		if (!resposta.equals("Email Enviado")) {
-//			throw new EmailException("Não foi possivel recuperar a senha. Tente novamente mais tarde!");
-//		}
+		System.out.println(myRandom.substring(0, 8));
+
+		String resposta = mail.sendEmail("Sua nova senha é: " + myRandom, userCadastrado.getUsername(),
+				"Team Vaness Rodrigues - Reset de Senha");
+
+		if (!resposta.equals("Email Enviado")) {
+			throw new EmailException("Não foi possivel recuperar a senha. Tente novamente mais tarde!");
+		}
 
 		userRepository.save(userCadastrado);
 
@@ -115,36 +131,34 @@ public class UserController {
 
 	}
 
-	
 	@GetMapping("{id}")
-	public ResponseEntity<Users> getPlanetId(@PathVariable long id) {
+	public ResponseEntity<Users> getUserId(@PathVariable long id) {
 
 		Users user = userRepository.findById(id);
-		
-		if(user == null) {
+
+		if (user == null) {
 			throw new UserNotFoundException("Id não encontrado!");
 		}
-		
+
 		user.setPassword(null);
 
 		return new ResponseEntity<Users>(user, HttpStatus.OK);
 	}
-	
 
 	@PatchMapping("{id}")
 	public ResponseEntity<Void> newPassword(@RequestBody Users user, @PathVariable long id) throws EmailException {
-		
+
 		Users userCadastrado = valid.validUserForNew(user, id);
-				
+
 		Password pe = new Password();
 		String passwordEncoder = pe.cryptPassword(user.getPassword());
 
-		userCadastrado.setId(id);	
+		userCadastrado.setId(id);
 		userCadastrado.setPassword(passwordEncoder);
-		userRepository.save(userCadastrado);		
-		
+		userRepository.save(userCadastrado);
+
 		return ResponseEntity.noContent().build();
 
 	}
-	
+
 }
