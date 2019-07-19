@@ -37,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	        "/swagger-ui.html",
 	        "/v2/api-docs",
 	        "/webjars/**"
-	};
+	}; 
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -45,8 +45,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 			.antMatchers("/info").permitAll()
 			.antMatchers(AUTH_WHITELIST).permitAll()
 			.antMatchers(HttpMethod.POST, "/users").permitAll()
-			.antMatchers(HttpMethod.GET, "/users/password/{username}").permitAll()
-			.antMatchers(HttpMethod.PATCH, "/users/password/{id}").permitAll()
+			.antMatchers(HttpMethod.GET, "/users/{username}/password").permitAll()
+			.antMatchers(HttpMethod.PATCH, "/users/{id}/password").permitAll()
 			.antMatchers(HttpMethod.POST, "/token").permitAll()
 			.anyRequest().authenticated()
 			.and()
