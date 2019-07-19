@@ -32,11 +32,13 @@ import com.lsiqueira.user.utils.Password;
 import com.lsiqueira.user.utils.ValidUser;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import io.swagger.annotations.ResponseHeader;
-import springfox.documentation.spring.web.json.Json;
 
 @RestController
 @RequestMapping("/users")
@@ -56,8 +58,8 @@ public class UserController {
 //	private SendMail mail;
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation(value = "Cadastra um usuário", notes = "Cadastra um usuário", response = Users.class)
-	@ApiResponses({ @ApiResponse(code = 201, message = "CREATED",  responseHeaders = {
+	@ApiOperation(value = "Cadastra um usuário", notes = "Cadastra um usuário")
+	@ApiResponses({ @ApiResponse(code = 201, message = "CREATED", responseHeaders = {
 			@ResponseHeader(name = HttpHeaders.LOCATION, response = String.class, description = "Mapeamento do recurso criado") }),
 			@ApiResponse(code = 400, message = "Bad Request"), @ApiResponse(code = 404, message = "Not Found") })
 	@PostMapping
@@ -86,7 +88,7 @@ public class UserController {
 
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Consulta um usuário", notes = "Consulta um usuário por email", response = Users.class)
-	@ApiResponses({ @ApiResponse(code = 200, message = "OK", response = Json.class),
+	@ApiResponses({ @ApiResponse(code = 200, message = "OK", response = String.class),
 			@ApiResponse(code = 400, message = "Bad Request"), @ApiResponse(code = 404, message = "Not Found") })
 	@GetMapping("/{username}/password")
 	public String getUserEmail(@PathVariable String username) throws JSONException {
@@ -105,12 +107,11 @@ public class UserController {
 		return json_string;
 
 	}
-	
-	
+
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@ApiOperation(value = "Reseta senha do usuário", notes = "Reseta senha do usuário")
-	@ApiResponses({ 
-			@ApiResponse(code = 400, message = "Bad Request"), @ApiResponse(code = 404, message = "Not Found") })
+	@ApiResponses({ @ApiResponse(code = 400, message = "Bad Request"),
+			@ApiResponse(code = 404, message = "Not Found") })
 	@PatchMapping("/{id}/password")
 	public ResponseEntity<Void> resetPassword(@RequestBody Users user, @PathVariable long id) throws EmailException {
 
@@ -140,9 +141,12 @@ public class UserController {
 	}
 
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Consulta um usuário por ID", notes = "Consulta um usuário por ID", response = Users.class)
+	@ApiOperation(value = "Consulta um usuário por ID", notes = "Consulta um usuário por ID", response = Users.class, authorizations = {
+			@Authorization(value = "apiKey") })
 	@ApiResponses({ @ApiResponse(code = 200, message = "OK", response = Users.class),
 			@ApiResponse(code = 400, message = "Bad Request"), @ApiResponse(code = 404, message = "Not Found") })
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "Authorization", value = "Bearer token", required = true, dataType = "string", paramType = "header") })
 	@GetMapping("{id}")
 	public ResponseEntity<Users> getUserId(@PathVariable long id) {
 
@@ -157,11 +161,13 @@ public class UserController {
 		return new ResponseEntity<Users>(user, HttpStatus.OK);
 	}
 
-	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation(value = "Cadastra nova senha", notes = "Cadastra nova senha para o usuário")
-	@ApiResponses({ 
-			@ApiResponse(code = 400, message = "Bad Request"), @ApiResponse(code = 404, message = "Not Found") })
+	@ApiOperation(value = "Cadastra nova senha", notes = "Cadastra nova senha para o usuário", authorizations = {
+			@Authorization(value = "apiKey") })
+	@ApiResponses({ @ApiResponse(code = 400, message = "Bad Request"),
+			@ApiResponse(code = 404, message = "Not Found") })
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "Authorization", value = "Bearer token", required = true, dataType = "string", paramType = "header") })
 	@PatchMapping("{id}")
 	public ResponseEntity<Void> newPassword(@RequestBody Users user, @PathVariable long id) throws EmailException {
 

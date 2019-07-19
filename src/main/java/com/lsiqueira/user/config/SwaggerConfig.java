@@ -32,6 +32,8 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 				.apis(RequestHandlerSelectors.basePackage("com.lsiqueira.user.controller"))
 				.paths(PathSelectors.any())
 				.build()
+				//.securitySchemes(Collections.singletonList(securitySchema()))
+				//.securitySchemes(Arrays.asList(apiKey()))
 				.apiInfo(metaData());
 	}
 
@@ -53,8 +55,18 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 				.build();
 	}
 
+//
+//	private ApiKey apiKey() {
+//        return new ApiKey("authkey", "Authorization", "header");
+//      }
+	
+//	private OAuth securitySchema() {
+//        List<AuthorizationScope> authorizationScopeList = Collections.singletonList(new AuthorizationScope("USER", "USER"));
+//        ResourceOwnerPasswordCredentialsGrant resourceOwnerPasswordCredentialsGrant = new ResourceOwnerPasswordCredentialsGrant("http://localhost:8080/token");
+//        List<GrantType> grantTypes = Collections.singletonList(resourceOwnerPasswordCredentialsGrant);
+//        OAuth oAuth = new OAuth(securitySchemaOAuth2, authorizationScopeList, grantTypes);
+//        return oAuth;
+//    }
+	
 
-	
-	
-	
 }
