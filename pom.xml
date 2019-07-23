@@ -107,7 +107,7 @@
 			<artifactId>smtp</artifactId>
 			<version>1.4.5</version>
 		</dependency>
-		
+
 		<!-- Swagger2 -->
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -127,7 +127,15 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
+
 		</plugins>
 
 
