@@ -29,6 +29,7 @@ import com.lsiqueira.user.exception.UserNotFoundException;
 import com.lsiqueira.user.repository.AuthoritiesRepository;
 import com.lsiqueira.user.repository.UserRepository;
 import com.lsiqueira.user.utils.Password;
+import com.lsiqueira.user.utils.SendMail;
 import com.lsiqueira.user.utils.ValidUser;
 
 import io.swagger.annotations.Api;
@@ -54,8 +55,8 @@ public class UserController {
 	@Autowired
 	private ValidUser valid;
 
-//	@Autowired
-//	private SendMail mail;
+	@Autowired
+	private SendMail mail;
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation(value = "Cadastra um usuário", notes = "Cadastra um usuário")
@@ -127,12 +128,12 @@ public class UserController {
 
 		System.out.println(myRandom.substring(0, 8));
 
-//		String resposta = mail.sendEmail("Sua nova senha é: " + myRandom, userCadastrado.getUsername(),
-//				"Team Vaness Rodrigues - Reset de Senha");
-//
-//		if (!resposta.equals("Email Enviado")) {
-//			throw new EmailException("Não foi possivel recuperar a senha. Tente novamente mais tarde!");
-//		}
+		String resposta = mail.sendEmail("Sua nova senha é: " + myRandom, userCadastrado.getUsername(),
+				"Team Vaness Rodrigues - Reset de Senha");
+
+		if (!resposta.equals("Email Enviado")) {
+			throw new EmailException("Não foi possivel recuperar a senha. Tente novamente mais tarde!");
+		}
 
 		userRepository.save(userCadastrado);
 
