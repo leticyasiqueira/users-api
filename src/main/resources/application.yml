@@ -16,3 +16,19 @@ spring:
     show-sql: true
     hibernate:
         ddl-auto: create-drop
+        
+        
+#Enabling postgre Console
+#spring:
+#  datasource:
+#    url: DATABASE_URL
+#    driverClassName: org.postgresql.Driver
+#    username: username
+#    password: password
+#  jpa:
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#    database: POSTGRESQL
+#    generate-ddl: true
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
