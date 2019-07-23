@@ -21,7 +21,7 @@
 #Enabling postgre Console
 spring:
   datasource:
-    url: HEROKU_POSTGRESQL_OLIVE_URL
+    url: DATABASE_URL
     driverClassName: org.postgresql.Driver
     username: username
     password: password
