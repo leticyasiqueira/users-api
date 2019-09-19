@@ -38,12 +38,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	        "/v2/api-docs",
 	        "/webjars/**"
 	}; 
+	
+	private static final String[] ACTUATOR = {
+	        "/actuator/**"
+	};
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable().authorizeRequests()
 			.antMatchers("/info").permitAll()
 			.antMatchers(AUTH_WHITELIST).permitAll()
+			.antMatchers(ACTUATOR).permitAll()
 			.antMatchers(HttpMethod.POST, "/users").permitAll()
 			.antMatchers(HttpMethod.GET, "/users/{username}/password").permitAll()
 			.antMatchers(HttpMethod.PATCH, "/users/{id}/password").permitAll()
